@@ -10,7 +10,11 @@ const empty=blank;
 export const progressLimit=6000000;
 
 export function progressDatabaseSettings(env){
-  if(env.PROGRESS_DATABASE_URL)return {connectionString:env.PROGRESS_DATABASE_URL};
+  if(env.PROGRESS_DATABASE_URL){
+    let url;try{url=new URL(env.PROGRESS_DATABASE_URL);}catch{throw new Error('Invalid progress database settings');}
+    if(!['postgres:','postgresql:'].includes(url.protocol)||!url.hostname||(url.searchParams.has('sslmode')&&url.searchParams.get('sslmode')!=='verify-full')||url.searchParams.has('ssl'))throw new Error('Progress database requires verified TLS');
+    return {connectionString:env.PROGRESS_DATABASE_URL,connectionOptions:{ssl:{rejectUnauthorized:true}}};
+  }
   if(env.PROGRESS_USE_AZURE_POSTGRESQL!=='true')return {};
   for(const name of ['AZURE_POSTGRESQL_HOST','AZURE_POSTGRESQL_USER','AZURE_POSTGRESQL_PASSWORD','AZURE_POSTGRESQL_DATABASE']){
     if(!env[name])throw new Error('Missing PostgreSQL setting: '+name);
@@ -85,7 +89,7 @@ export function createProgressStore({connectionString,connectionOptions,database
    connecting??=(async()=>{const {Pool}=await import('pg');const instance=new Pool({...connectionOptions,...(connectionString?{connectionString}:{}),max:4,connectionTimeoutMillis:5000,idleTimeoutMillis:30000,query_timeout:7000,statement_timeout:5000});instance.on('error',()=>console.warn('Progress database unavailable.'));return instance;})().catch(error=>{connecting=undefined;throw error;});
    pool=await connecting;
   }
-  initializing??=pool.query(`CREATE TABLE IF NOT EXISTS sai_account_progress (
+  initializing??=pool.query(`CREATE TABLE IF NOT EXISTS public.sai_account_progress (
    tenant_id uuid NOT NULL, object_id uuid NOT NULL,
    version integer NOT NULL CHECK (version > 0), progress jsonb NOT NULL,
    updated_at timestamptz NOT NULL DEFAULT now(), PRIMARY KEY (tenant_id, object_id)
@@ -94,10 +98,10 @@ export function createProgressStore({connectionString,connectionOptions,database
  }
  const convert=row=>row?{version:Number(row.version),progress:row.progress}:{version:0,progress:empty()};
  return {
-  async read(user){const db=await ready();const {rows}=await db.query('SELECT version,progress FROM sai_account_progress WHERE tenant_id=$1 AND object_id=$2',[user.tenant,user.object]);return convert(rows[0]);},
+  async read(user){const db=await ready();const {rows}=await db.query('SELECT version,progress FROM public.sai_account_progress WHERE tenant_id=$1 AND object_id=$2',[user.tenant,user.object]);return convert(rows[0]);},
   async write(user,version,progress){
    const db=await ready(),values=[user.tenant,user.object,JSON.stringify(progress)];
-   const result=version===0?await db.query('INSERT INTO sai_account_progress (tenant_id,object_id,version,progress) VALUES ($1,$2,1,$3::jsonb) ON CONFLICT DO NOTHING RETURNING version,progress',values):await db.query('UPDATE sai_account_progress SET version=version+1,progress=$3::jsonb,updated_at=now() WHERE tenant_id=$1 AND object_id=$2 AND version=$4 RETURNING version,progress',[...values,version]);
+   const result=version===0?await db.query('INSERT INTO public.sai_account_progress (tenant_id,object_id,version,progress) VALUES ($1,$2,1,$3::jsonb) ON CONFLICT DO NOTHING RETURNING version,progress',values):await db.query('UPDATE public.sai_account_progress SET version=version+1,progress=$3::jsonb,updated_at=now() WHERE tenant_id=$1 AND object_id=$2 AND version=$4 RETURNING version,progress',[...values,version]);
    return result.rows[0]?convert(result.rows[0]):null;
   },
   async close(){if(pool&&!database)await pool.end();}
