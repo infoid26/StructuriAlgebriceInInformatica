@@ -1,0 +1,28 @@
+# Dependencies and logs
+node_modules/
+*.log
+
+# Environment configuration
+.env
+.env.*
+!.env.example
+
+# Personal progress exports
+progres-*.json
+*-progres-*.json
+
+# Study documents and generated analysis
+/sources/
+/analysis/
+
+# Caches and temporary files
+__pycache__/
+*.py[cod]
+.cache/
+coverage/
+*.tmp
+*.temp
+*.bak
+.DS_Store
+Thumbs.db
+Desktop.ini
