@@ -8,10 +8,10 @@ import {exerciseHtml} from '../site/ui.js';
 const byId=new Map(exercises.map(e=>[e.id,e]));
 const chooseInput=e=>Array.isArray(e.answer)?e.answer.length?e.answer.join(','):'∅':String(e.answer);
 test('algebra prerequisites, stable progress IDs and complete practice are preserved',()=>{
- assert.equal(lessons[0].id,'impartire-baze');assert.equal(lessons[7].id,'demonstratii-baze');assert.equal(lessons[8].id,'multimi');
- assert.equal(chapters[0].id,'baze');assert.ok(exercises.length>=800);
+ assert.equal(lessons[0].id,'grup');assert.equal(lessons[1].id,'resturi');assert.ok(!chapters.some(c=>['baze','limbaj','structura'].includes(c.id)));
+ assert.equal(chapters[0].id,'modulo');assert.ok(exercises.length>=600);
  for(const l of lessons){assert.ok(l.exercises.length>=15,l.id);assert.equal(new Set(l.exercises.map(e=>e.prompt)).size,l.exercises.length,l.id);assert.ok(l.exercises.some(e=>e.kind==='proof'),l.id);}
- for(const id of ['multimi-1','invers-1','parametri-1','max01-1'])assert.ok(byId.has(id));
+ for(const id of ['grup-1','invers-1','parametri-1','max01-1'])assert.ok(byId.has(id));
  const state=blank();recordGrade(state,'invers-1',{status:'correct'},12345678);const imported=sanitize(JSON.parse(JSON.stringify(state)),new Set(exercises.map(e=>e.id)),new Set(lessons.map(l=>l.id)));
  assert.equal(imported.attempts['invers-1'].everCorrect,true);assert.equal(imported.attempts['invers-1'].lastIndependent,12345678);
 });
@@ -40,11 +40,11 @@ test('mixed and foundation exams contain ten distinct independent tasks',()=>{
  for(const mode of ['mixed','foundations'])for(const r of [0,0.25,0.75,0.999]){
   const ids=chooseQuestions(exercises,chapters,mode,()=>r);assert.equal(ids.length,10);assert.equal(new Set(ids).size,10);
   const questions=ids.map(id=>byId.get(id));assert.ok(questions.every(e=>e.kind!=='proof'));
-  if(mode==='foundations')assert.ok(questions.every(e=>e.chapter==='baze'));else assert.equal(new Set(questions.map(e=>e.chapter)).size,chapters.length);
+  if(mode==='foundations')assert.ok(questions.every(e=>e.chapter==='modulo'));else assert.equal(new Set(questions.map(e=>e.chapter)).size,chapters.length);
  }
 });
 test('math controls, readonly exam results and concealed solutions remain separate',()=>{
- const ex=byId.get('calcul-fractii-1');const learn=exerciseHtml(ex,{});assert.ok(learn.includes('data-insert="frac"'));assert.ok(learn.includes('data-editor-mode="text"'));
+ const ex=byId.get('invers-1');const learn=exerciseHtml(ex,{});assert.ok(learn.includes('data-insert="frac"'));assert.ok(learn.includes('data-editor-mode="text"'));
  const exam=exerciseHtml(ex,{},'exam');assert.ok(!exam.includes('data-action="hint"'));assert.ok(exam.includes('class="solution" hidden'));
  const locked=exerciseHtml(ex,{value:'5/6'},'result');assert.ok(locked.includes('readonly'));assert.ok(!locked.includes('data-insert='));
  const proof=exerciseHtml(exercises.find(e=>e.kind==='proof'),{});assert.ok(!proof.includes('data-editor='));assert.ok(proof.includes('data-action="reviewed"'));assert.ok(proof.includes('Criterii de verificare'));assert.ok(!proof.includes('data-action="check"'));

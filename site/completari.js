@@ -14,14 +14,14 @@ export function extendCourse(lessons){
  N('Calculează fracția [2;1,2]=2+1/(1+1/2).', '8/3','Începe din interior: 1+1/2=3/2.',['2+1/(3/2)=2+2/3=8/3.']),
  N('101·4−13·31=1. Găsește inversul lui 13 modulo 101 în {0,…,100}.',70,'Coeficientul lui 13 este −31.',['−31≡70; 13·70=910≡1 (mod 101).'])
  ],'Folosește penultimul convergent; ultimul este chiar raportul n/a și nu produce restul 1.',['invers'])],
- ['ciclic',L('produs-ordine','structura','Ordinul unui produs și ecuația gᵏ=e','Să folosești ipotezele de comutare și coprimalitate.',[
+ ['ordin-multiplicativ',L('produs-ordine','structura','Ordinul unui produs și ecuația gᵏ=e','Să folosești ipotezele de comutare și coprimalitate.',[
  ['Cazul coprim','Dacă gh=hg, ord(g)=m și ord(h)=n, cu gcd(m,n)=1, atunci ord(gh)=mn. Fără comutare nu poți transforma (gh)ᵏ în gᵏhᵏ. Fără coprimalitate, ordinul poate fi mai mic decât produsul.'],
  ['De ce este minim','Dacă (gh)ᵏ=e, atunci gᵏ=h⁻ᵏ aparține atât subgrupului generat de g, cât și celui generat de h. Ordinul unui element din intersecție divide și m, și n, deci este 1. Rezultă m|k și n|k, așadar mn|k.'],
  ['O ecuație într-un grup finit','Dacă |G|=211 și g³=e, ordinul lui g divide atât 211, cât și 3. Singurul divizor comun este 1; g=e. Mai general, gcd(k,|G|)=1 implică faptul că gᵏ=e are numai soluția e.']
  ],{prompt:'g și h comută, ord(g)=4, ord(h)=9. Găsește ord(gh).',steps:['gcd(4,9)=1 și avem comutare.','Ordinul produsului este 4·9=36.']},[
  N('g și h comută, ord(g)=5, ord(h)=8. Calculează ord(gh).',40,'Verifică gcd(5,8).',['Ordinele sunt coprime; ordinul produsului este 40.']),
  N('Un grup G are 211 elemente. Câte elemente g satisfac g³=e?',1,'Ordinul divide 211 și 3.',['Ordinul este 1; numai neutrul e satisface ecuația.'])
- ],'Din ordinele 2 și 2 nu rezultă ordinul produsului 4: pentru h=g, produsul este e.',['ordin-multiplicativ','lagrange','ciclic'])],
+ ],'Din ordinele 2 și 2 nu rezultă ordinul produsului 4: pentru h=g, produsul este e.',['ordin-multiplicativ','ordin-aditiv'])],
  ['signatura',L('puteri-permutari','permutari','Puteri, rădăcini și ordinul maxim','Să rezolvi o ecuație de permutări și să justifici un maxim.',[
  ['Ridicarea unui ciclu la putere','Într-un ciclu de lungime l, σᵏ avansează cu k poziții. Ciclul se desface în gcd(l,k) cicluri de lungime l/gcd(l,k). Astfel pătratul unui ciclu de lungime 4 este produsul a două transpoziții disjuncte.'],
  ['Rădăcina pătrată','O permutare admite o rădăcină pătrată exact când fiecare lungime pară apare într-un număr par de cicluri. Ciclurile impare au rădăcină în același suport; două cicluri pare de aceeași lungime se pot intercala. Un singur ciclu de lungime 4, alături de unul de lungime 5, nu poate fi un pătrat.'],
@@ -88,8 +88,6 @@ export function extendCourse(lessons){
  ],'Nu folosi N·φ(30)/30 dacă N nu este multiplu de 30: trebuie tratat și blocul incomplet.',['numarare','euclid'])]
  ];
  for(const [after,lesson] of additions){const index=lessons.findIndex(l=>l.id===after);if(index<0)throw Error('Lecție de inserare absentă: '+after);lessons.splice(index+1,0,lesson);}
- lessons.find(l=>l.id==='multimi').theory.push(['Mulțimile numerice','ℕ desemnează numerele naturale (vom preciza când excludem 0), ℤ numerele întregi, ℚ numerele raționale și ℝ numerele reale. ℤ∖{0} înseamnă toți întregii în afară de 0. Indicele din ℤₙ va indica modulul n, nu o putere.']);
- lessons.find(l=>l.id==='morfisme').theory.push(['Numărăm nucleul și imaginea','Pentru f:ℤₙ→ℤₘ, f([x])=[kx], condiția m|kn asigură că reprezentanții aceleiași clase dau aceeași imagine. Imaginile sunt multiplii lui gcd(k,m) modulo m, deci sunt m/gcd(k,m) valori distincte. Fiecare are același număr de preimagini: clasele laterale ale nucleului. Rezultă |ker f|=n/|Im f|.']);
  lessons.find(l=>l.id==='det2').theory.unshift(['Cum arată o matrice','O matrice este un tabel de numere: liniile sunt orizontale, coloanele sunt verticale. Scrierea cu liniile (2,3),(1,4) înseamnă 2 și 3 pe prima linie, 1 și 4 pe a doua. „2×2” spune două linii și două coloane. Un scalar înseamnă aici un număr din mulțimea în care calculăm.']);
  lessons.find(l=>l.id==='matrice-modulare').theory.unshift(['Înmulțirea matricelor','Pentru A=((a,b),(c,d)) și B=((e,f),(g,h)), produsul AB are liniile (ae+bg, af+bh), (ce+dg, cf+dh): fiecare componentă este suma produselor dintre o linie a primei matrice și o coloană a celei de-a doua. Matricea I=((1,0),(0,1)) este neutrul. Inversa A⁻¹ trebuie să satisfacă AA⁻¹=A⁻¹A=I.']);
  const quadratic=lessons.find(l=>l.id==='patratice');

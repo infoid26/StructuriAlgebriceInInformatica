@@ -17,6 +17,6 @@ export function homeHtml(state,chapterOpen){
    return `${i%5===0?`<div class="unit-divider"><span>UNITATEA ${Math.floor(i/5)+1}</span><strong>${esc(lesson.title)}</strong></div>`:''}<a class="path-node ${done?'path-done':active?'path-current':'path-future'}" href="#lesson/${lesson.id}" ${active?'aria-current="step"':''}><span class="node-bubble" aria-hidden="true">${done?'✓':i+1}</span><span class="node-label">${esc(lesson.title)}<small>${lesson.exercises.length} exerciții${isIndependent(state,lesson)?' · rezolvate independent':' · explicații și exemple'}</small></span>${active?'<span class="start-tag">CONTINUĂ AICI</span>':''}</a>`;
   }).join('')}</div></details></article>`;
  }).join('')}</div></div>
- <aside class="notice">Material de pregătire pentru INFO ID 26, construit după resursele de studiu din 2025. Traseul începe cu bazele matematicii și continuă cu structurile algebrice.</aside>
+ <aside class="notice">Material de pregătire pentru INFO ID 26, construit după resursele de studiu din 2025. Traseul începe cu grupuri și clase de resturi. Notațiile și metodele sunt explicate în contextul problemelor.</aside>
  <details class="notice"><summary>Ce știm despre evaluare</summary><p>Cursul folosește materia din 2025. Simulările sunt pentru antrenament; formatul și regulile examenului curent trebuie confirmate cu cadrul didactic.</p></details></section>`;
 }

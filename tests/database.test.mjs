@@ -22,7 +22,7 @@ test('progress uses its own public table without modifying other courses in the 
  try{
   await database.query('CREATE TABLE public.existing_course_progress (id integer PRIMARY KEY, progress jsonb NOT NULL)');
   await database.query('INSERT INTO public.existing_course_progress VALUES (1, $1::jsonb)',[JSON.stringify({keep:'existing-progress'})]);
-  const progress=blank();attempt(progress,'impartire-baze-1').value='-2';
+  const progress=blank();attempt(progress,'resturi-1').value='-2';
   const saved=await store.write(user,0,progress);assert.equal(saved.version,1);assert.deepEqual((await store.read(user)).progress,progress);
   assert.equal((await database.query('SELECT progress FROM public.existing_course_progress WHERE id=1')).rows[0].progress.keep,'existing-progress');
   const tables=(await database.query("SELECT tablename FROM pg_tables WHERE schemaname='public'")).rows.map(row=>row.tablename).sort();

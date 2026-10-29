@@ -1,23 +1,30 @@
 # Conținutul cursului
 
-Cursul are 58 de lecții și 879 de exerciții, dintre care 60 includ justificarea raționamentului și criterii de autoevaluare.
+45 de lecții și 707 exerciții, dintre care 46 cer justificarea raționamentului prin autoevaluare.
 
 | Capitol | Lecții | Exerciții |
 | --- | ---: | ---: |
-| Instrumente pentru algebră | 8 | 120 |
-| Limbajul algebrei | 4 | 60 |
-| Aritmetică modulară | 6 | 91 |
-| Grupuri și ordine | 5 | 77 |
-| Permutări | 5 | 75 |
-| Structura grupurilor | 6 | 90 |
-| Inele, corpuri și polinoame | 9 | 140 |
-| Determinanți și sisteme | 8 | 121 |
-| Congruențe și aplicații | 7 | 105 |
+| Grupuri și clase de resturi | 9 | 144 |
+| Ordinul elementelor | 5 | 81 |
+| Permutări | 5 | 79 |
+| Inele, corpuri și polinoame | 10 | 157 |
+| Matrice, determinanți și sisteme | 11 | 170 |
+| Aplicațiile din lucrări | 5 | 76 |
 
-Recapitularea pornește de la nivelul clasei a V-a și acoperă instrumentele necesare algebrei: resturi, fracții, puteri, ecuații, divizibilitate, logică și demonstrații. Exercițiile includ calcule, aplicarea definițiilor, contraexemple și justificări.
+## Materiale de referință
 
-## Limite de acoperire
+Traseul urmărește temele din notițele scanate ale celor patru cursuri din noiembrie 2025, rezumat, fișele tematice și modelele de examen disponibile din 2025–2026. Manualele generale sunt folosite ca sprijin pentru explicații.
 
-Traseul se bazează pe temele din materialele de studiu din 2025. Acoperirea integrală a tuturor materialelor, inclusiv a scanărilor și înregistrărilor, nu este confirmată. Numărul exercițiilor nu reprezintă o dovadă de acoperire integrală sau o garanție a promovării.
+| Material | Teme urmărite în lecții |
+| --- | --- |
+| Cursul 1 și rezumatul | Grupuri, clase de resturi, unități, Euclid, fracții continue, Euler, Fermat, Wilson, permutări și criptare |
+| Cursul 2 | Ordine, signatură, rădăcini de permutări și factori primi obținuți din proprietățile ordinului |
+| Cursul 3 | Determinanți, recurențe, rang, Cramer, Kronecker–Capelli, parametri, inele, unități în ℤ[√23] și polinoame |
+| Cursul 4 | Corpuri cu 49 de elemente, cuaternioni, matrice modulare, criptare cu matrice, inverse și numărarea matricelor inversabile |
+| Fișele despre determinanți, sisteme și Viète | Dezvoltarea Laplace, proprietățile determinantului, discuția sistemelor și relațiile dintre rădăcini |
+| Lucrările din rezumat | Resturi chinezești, RSA, Vigenère, logaritm discret, submulțimi fără vecini și numere prime cu 30 |
+| Modelele de examen | Inverse și ordine modulo n, permutări, rădăcini de grad 4 peste corpuri finite și maximul determinanților matricelor 0/1 |
 
-Spațiile vectoriale și forma Jordan nu sunt dezvoltate în acest traseu. Demonstrațiile se verifică prin autoevaluare, folosind criteriile oferite. Simulările sunt pentru antrenament; formatul și regulile examenului curent se confirmă cu cadrul didactic.
+Lecțiile explică simbolurile și pașii algebrici acolo unde sunt folosiți. Exercițiile păstrează mulțimea și operația din cerință și cer verificarea rezultatului.
+
+Demonstrațiile se verifică prin compararea argumentului cu pașii și criteriile oferite. Simulările sunt pentru antrenament; formatul și regulile examenului curent se confirmă cu cadrul didactic. Acoperirea descrisă se referă la documentele enumerate.

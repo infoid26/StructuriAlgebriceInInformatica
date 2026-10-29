@@ -1,5 +1,5 @@
 import {addPracticeBank} from './practice-bank.js';
-import {addFoundations} from './fundamente.js';
+import {configureCurriculum,addGuidedExercises} from './curriculum.js';
 import {extendCourse} from './completari.js';
 const N=(prompt,answer,hint,steps)=>({kind:'number',prompt,answer,hint,steps});
 const S=(prompt,answer,hint,steps)=>({kind:'set',prompt,answer,hint,steps});
@@ -8,49 +8,12 @@ const P=(prompt,answer,hint,steps,modulus)=>({kind:'poly',prompt,answer,hint,ste
 const C=(prompt,options,answer,hint,steps)=>({kind:'choice',prompt,options,answer,hint,steps});
 const D=(prompt,rubric,steps)=>({kind:'proof',prompt,rubric,steps,hint:rubric[0]});
 const L=(id,chapter,title,goal,theory,worked,exercises,trap,prerequisites=[])=>({id,chapter,title,goal,theory,worked,exercises,trap,prerequisites,minutes:12});
-export const chapters=[
-{id:'limbaj',title:'Limbajul algebrei',subtitle:'Mulțimi, funcții și operații. Începem de la simboluri.',icon:'∈',priority:false},
-{id:'modulo',title:'Aritmetica modulară',subtitle:'Resturi, Euclid și inversul modular. Prima familie de subiecte.',icon:'≡',priority:true},
-{id:'grupuri',title:'Grupuri și ordine',subtitle:'De ce funcționează formulele și când le poți aplica.',icon:'G',priority:true},
-{id:'permutari',title:'Permutări',subtitle:'Cicluri, compunere, ordin și signatură.',icon:'σ',priority:true},
-{id:'structura',title:'Structura grupurilor',subtitle:'Subgrupuri, Lagrange, morfisme și demonstrații.',icon:'H',priority:false},
-{id:'inele',title:'Inele, corpuri și polinoame',subtitle:'Calcul în corpuri finite și rădăcinile din examen.',icon:'𝔽',priority:true},
-{id:'matrice',title:'Determinanți și sisteme',subtitle:'De la ad − bc la matrice 0/1 și discuții după parametru.',icon:'Δ',priority:true},
-{id:'aplicatii',title:'Congruențe și aplicații',subtitle:'Resturi chinezești, RSA și numărare din rezumat.',icon:'↗',priority:false}
-];
+export const chapters=[];
 export const lessons=[
-L('multimi','limbaj','Cum citim o mulțime','Să poți citi ∈, ⊆, ∩ și ∪ fără să ghicești.',[
-['Sensul simbolurilor','O mulțime este o colecție de elemente distincte. x ∈ A înseamnă că x este un element al lui A. A ⊆ B înseamnă că fiecare element din A se află și în B. |A| este numărul elementelor, dacă A este finită.'],
-['Operații','A ∩ B păstrează elementele comune. A ∪ B adună elementele din ambele mulțimi, fiecare o singură dată. A ∖ B păstrează elementele din A care nu sunt în B. ∅ este mulțimea fără elemente.'],
-['Exemplu mic','Pentru A={1,2,3} și B={3,4}, intersecția este {3}, reuniunea este {1,2,3,4}, iar A ∖ B={1,2}. Ordinea elementelor nu contează.']
-],{prompt:'A={0,1,2,3}, B={2,3,4}. Găsește A ∩ B.',steps:['Verificăm pe rând elementele lui A.','2 și 3 apar și în B.','A ∩ B={2,3}.']},[
-S('A={1,2,3,4}, B={2,4,6}. Scrie A ∩ B.',[2,4],'Păstrează doar elementele prezente în ambele mulțimi.',['2 și 4 se află în A și în B. Rezultatul este {2,4}.']),
-N('Câte elemente are {1,1,2,2,3}?',3,'Repetarea unui element nu mărește mulțimea.',['Elementele distincte sunt 1,2,3. Cardinalul este 3.'])
-],'Un element și o submulțime sunt lucruri diferite: 2 ∈ A, dar {2} ⊆ A.'),
-L('functii','limbaj','Funcții și bijecții','Să distingi injectivitatea, surjectivitatea și inversa unei funcții.',[
-['Intrare și ieșire','O funcție f:A→B asociază fiecărui element din A exact un element din B. A este domeniul; B este codomeniul. Imaginea este mulțimea valorilor efectiv obținute.'],
-['Trei proprietăți','Injectivă: două intrări diferite au ieșiri diferite. Surjectivă: fiecare element din codomeniu este atins. Bijectivă: ambele proprietăți. Numai o bijecție are o funcție inversă pe întreg codomeniul.'],
-['Compunere','(f ∘ g)(x)=f(g(x)): aplici mai întâi funcția din dreapta. Pentru f(x)=x+1 și g(x)=2x, f(g(3))=7.']
-],{prompt:'f:{1,2,3}→{1,2,3}, f(1)=2, f(2)=3, f(3)=1. Cât este f⁻¹(2)?',steps:['Inversa caută intrarea care produce 2.','f(1)=2, deci f⁻¹(2)=1.']},[
-N('f(x)=x+1, g(x)=2x pe ℤ. Calculează (f ∘ g)(4).',9,'Aplică g, apoi f.',['g(4)=8; f(8)=9.']),
-C('Funcția f:ℤ→ℤ, f(x)=2x este:',[{id:'a',label:'Injectivă, dar nu surjectivă'},{id:'b',label:'Bijectivă'},{id:'c',label:'Surjectivă, dar nu injectivă'}],'a','Poți obține un număr impar ca ieșire?',['Din 2x=2y rezultă x=y. Dar 1 nu este imaginea niciunui întreg.'])
-],'Ordinea compunerii contează. Citește f ∘ g de la dreapta la stânga.',['multimi']),
-L('echivalenta','limbaj','Relații și clase de echivalență','Să înțelegi de ce numere diferite pot reprezenta aceeași clasă.',[
-['O relație','O relație pe A spune care perechi de elemente sunt legate. O echivalență este reflexivă (a∼a), simetrică (a∼b ⇒ b∼a) și tranzitivă (a∼b, b∼c ⇒ a∼c).'],
-['Clase','Clasa lui a conține toate elementele echivalente cu a. Clasele sunt disjuncte sau identice și acoperă mulțimea inițială.'],
-['Congruența','a≡b (mod n) înseamnă n | (a−b). Astfel 2,7,12 sunt în aceeași clasă modulo 5. Reprezentanții canonici sunt 0,1,…,n−1.']
-],{prompt:'În ce clasă modulo 4 se află 14?',steps:['14=3·4+2.','Clasa lui 14 este aceeași cu a lui 2.']},[
-N('Scrie reprezentantul din {0,1,2,3,4} al clasei lui 17 modulo 5.',2,'Împarte cu rest: 17=3·5+?.',['17=3·5+2, deci 17≡2 (mod 5).']),
-C('Relația a∼b ⇔ a≤b pe ℤ este o echivalență?',[{id:'a',label:'Da'},{id:'b',label:'Nu, nu este simetrică'}],'b','1≤2, dar este adevărat și 2≤1?',['Reflexivitatea și tranzitivitatea nu sunt suficiente: simetria lipsește.'])
-],'Egalitatea claselor nu înseamnă egalitatea reprezentanților ca întregi.',['multimi']),
-L('operatii','limbaj','Operații, neutru și invers','Să identifici operația înainte să calculezi inversul.',[
-['Închidere','O operație pe G este o funcție G×G→G. Dacă rezultatul iese din G, nu este o operație internă pe G. Scăderea nu este internă pe ℕ.'],
-['Asociativ și comutativ','Asociativ: (a*b)*c=a*(b*c). Comutativ: a*b=b*a. Sunt proprietăți diferite. În compunerea funcțiilor există asociativitate, dar nu întotdeauna comutativitate.'],
-['Neutrul și inversul','Neutrul e satisface e*a=a*e=a. Inversul lui a este b cu a*b=b*a=e. La adunare, neutrul este 0 și inversul este opusul; la înmulțire, neutrul este 1.']
-],{prompt:'Pe ℤ, a*b=a+b+2. Găsește neutrul.',steps:['Cerem a*e=a.','a+e+2=a ⇒ e=−2.','Verificăm și e*a=a.']},[
-N('Pentru a*b=a+b+2 pe ℤ, care este inversul lui 3?',-7,'Produsul trebuie să fie neutrul −2.',['3+b+2=−2 ⇒ b=−7.']),
-C('Care condiție exprimă asociativitatea?',[{id:'a',label:'(a*b)*c=a*(b*c)'},{id:'b',label:'a*b=b*a'},{id:'c',label:'a*a=a'}],'a','Se mută parantezele, fără să schimbi ordinea elementelor.',['Prima condiție este asociativitatea; a doua este comutativitatea.'])
-],'Inversul depinde de operație. Nu înlocui automat „invers” cu 1/a.',['functii']),
+
+
+
+
 L('resturi','modulo','Calculăm modulo n','Să reduci numere pozitive și negative la un rest corect.',[
 ['Ce păstrăm','Modulo n păstrăm doar restul împărțirii la n. Pentru n>0, reprezentantul cerut este între 0 și n−1.'],
 ['Numere negative','−7≡3 (mod 5), fiindcă −7=(−2)·5+3. Poți aduna multipli ai modulului până intri în interval.'],
@@ -95,7 +58,6 @@ S('Rezolvă 6x≡5 (mod 15). Scrie ∅ dacă nu există soluții.',[],'gcd(6,15)
 L('grup','grupuri','Ce este un grup?','Să verifici definiția cu exemple și contraexemple.',[
 ['Definiția','Un grup (G,*) are o operație internă asociativă, un element neutru și un invers pentru fiecare element. Dacă operația este și comutativă, grupul este abelian.'],
 ['Exemple','(ℤ,+) este grup. (ℕ,+) nu este grup: lipsesc inversele aditive ale numerelor pozitive. (ℤ∖{0},·) nu este grup: inversul lui 2 nu este întreg. (ℚ∖{0},·) este grup.'],
-['Monoizi','Un monoid are asociativitate și neutru, dar nu cere inverse pentru toate elementele. De exemplu (ℕ₀,+) este monoid. Un semigrup cere doar asociativitate.']
 ],{prompt:'Este (ℤ₈,+) un grup?',steps:['Adunarea claselor este internă și asociativă.','Neutrul este 0. Inversul aditiv al lui a este −a modulo 8.','Da; în plus, este abelian.']},[
 C('Care structură este grup?',[{id:'a',label:'(ℤ,+)'},{id:'b',label:'(ℤ,·)'},{id:'c',label:'(ℕ₀,+)'}],'a','Verifică existența inversului pentru fiecare element.',['În (ℤ,+), inversul lui a este −a. În celelalte variante există elemente fără invers.']),
 N('Care este neutrul grupului (U(ℤ₁₂),·)?',1,'Neutrul trebuie să lase fiecare element neschimbat la înmulțire.',['Neutrul multiplicativ este clasa lui 1.'])
@@ -168,46 +130,11 @@ N('Permutarea are imaginile [3,1,2]. Care este signatura?',1,'Inversiunile sunt 
 ],'„Pară” descrie paritatea numărului de transpoziții, nu a ordinului permutării.',['cicluri'])
 ];
 lessons.push(
-L('subgrup','structura','Recunoaștem un subgrup','Să verifici un subgrup fără să repeți toate axiomele.',[
-['Criteriul','O submulțime nevidă H⊆G este subgrup dacă pentru orice a,b∈H avem ab⁻¹∈H. În notație aditivă verifici a−b∈H.'],
-['Un exemplu','2ℤ este subgrup al lui (ℤ,+): este nevid și diferența a două numere pare este pară. Numerele impare nu formează subgrup: nu conțin 0.'],
-['Subgrup generat','⟨g⟩ conține puterile întregi ale lui g. Într-un grup aditiv, ⟨a⟩ conține multiplii întregi ai lui a.']
-],{prompt:'Ce elemente are ⟨4⟩ în (ℤ₁₂,+)?',steps:['Adunăm repetat 4 modulo 12.','0,4,8, apoi 12≡0.','Subgrupul este {0,4,8}.']},[
-S('Scrie ⟨6⟩ în (ℤ₁₈,+), folosind reprezentanți canonici.',[0,6,12],'Pornește de la 0 și adună 6 până revii.',['0→6→12→0, deci {0,6,12}.']),
-C('Numerele impare formează subgrup al lui (ℤ,+)?',[{id:'a',label:'Da'},{id:'b',label:'Nu'}],'b','Orice subgrup trebuie să conțină neutrul.',['0 nu este impar; în plus, suma a două numere impare este pară.'])
-],'H trebuie să fie nevid; închiderea scrisă pentru mulțimea vidă nu este suficientă.',['grup']),
-L('lagrange','structura','Clase laterale și Lagrange','Să folosești divizibilitatea și să nu inversezi teorema.',[
-['Clase laterale','Pentru H≤G, clasa stângă aH={ah:h∈H}. Toate clasele au |H| elemente și formează o partiție a grupului. Numărul claselor este indicele [G:H].'],
-['Lagrange','Pentru G finit, |G|=[G:H]·|H|. În particular, |H| divide |G|, iar ordinul oricărui element divide |G|.'],
-['Atenție la reciprocă','Teorema nu spune că pentru fiecare divizor d al lui |G| există un subgrup de ordin d. În grupuri ciclice această existență este adevărată, dar necesită un rezultat separat.']
-],{prompt:'Un grup G are 30 de elemente, iar H are 5. Care este indicele?',steps:['[G:H]=|G|/|H|=30/5=6.','Există 6 clase laterale, fiecare cu 5 elemente.']},[
-N('Dacă |G|=42 și |H|=7, calculează [G:H].',6,'Împarte cardinalul grupului la cardinalul subgrupului.',['42/7=6.']),
-S('Care pot fi ordinele elementelor unui grup cu 15 elemente, conform restricției Lagrange?',[1,3,5,15],'Scrie toți divizorii pozitivi ai lui 15.',['Ordinul divide 15; candidații sunt {1,3,5,15}. Nu afirmăm că toți apar în orice grup.'])
-],'Din gᵏ=e rezultă ord(g) | k, nu neapărat ord(g)=k.',['subgrup','ordin-multiplicativ']),
-L('ciclic','structura','Grupuri ciclice și generatori','Să identifici elementele care generează tot grupul.',[
-['Un singur generator','G este ciclic dacă G=⟨g⟩ pentru un element g. Un grup ciclic este abelian. Orice grup cu ordin prim este ciclic: un element nenul/neidentic cu neutrul are ordinul acelui prim.'],
-['În ℤₙ','Grupul aditiv ℤₙ este ciclic. Clasa lui a este generator dacă gcd(a,n)=1, deoarece ordinul ei trebuie să fie n. Numărul generatorilor este φ(n).'],
-['Subgrupuri','Un grup ciclic finit de ordin n are exact un subgrup de ordin d pentru fiecare divizor d al lui n. Acesta este generat de g^(n/d).']
-],{prompt:'Generatorii aditivi ai lui ℤ₈?',steps:['Căutăm a din {0,…,7} cu gcd(a,8)=1.','Sunt 1,3,5,7.']},[
-S('Scrie toți generatorii grupului aditiv ℤ₁₀.',[1,3,7,9],'Generatorii sunt clasele prime cu 10.',['1,3,7,9 sunt exact reprezentanții cu gcd(a,10)=1.']),
-N('Câți generatori are un grup ciclic de ordin 12?',4,'Numărul este φ(12).',['φ(12)=12(1−1/2)(1−1/3)=4.'])
-],'„Abelian” nu implică „ciclic”; de exemplu ℤ₂×ℤ₂ nu are element de ordin 4.',['lagrange']),
-L('morfisme','structura','Morfisme, nucleu și imagine','Să urmărești ce păstrează o aplicație între grupuri.',[
-['Operația se păstrează','Un morfism f:G→K satisface f(ab)=f(a)f(b). În grupuri aditive: f(a+b)=f(a)+f(b). Un izomorfism este un morfism bijectiv.'],
-['Nucleu și imagine','ker(f)={g:f(g)=e_K}; Im(f)={f(g):g∈G}. Nucleul este subgrup normal, imaginea este subgrup. f este injectiv exact când ker(f)={e_G}.'],
-['Exemplu finit','f:ℤ₁₂→ℤ₄, f([a]₁₂)=[a]₄ este bine definit și surjectiv, fiindcă 4 divide 12. Nucleul conține clasele 0,4,8.']
-],{prompt:'Nucleul reducerii ℤ₁₂→ℤ₄?',steps:['f(a)=0 exact când a este multiplu de 4.','În reprezentanții lui ℤ₁₂, obținem {0,4,8}.']},[
-S('f:ℤ₁₈→ℤ₆, f([a]₁₈)=[a]₆. Scrie nucleul.',[0,6,12],'Caută clasele care devin 0 modulo 6.',['Sunt 0,6,12.']),
-C('Un morfism de grupuri cu nucleul {e} este:',[{id:'a',label:'Injectiv'},{id:'b',label:'Întotdeauna surjectiv'},{id:'c',label:'Întotdeauna constant'}],'a','Dacă f(a)=f(b), aplică morfismul lui ab⁻¹.',['f(ab⁻¹)=e, deci ab⁻¹=e și a=b. Surjectivitatea nu rezultă.'])
-],'O formulă pe reprezentanți trebuie verificată ca bine definită pe clase.',['subgrup','functii']),
-L('factor','structura','Subgrup normal, grup factor și indice 2','Să construiești o demonstrație scurtă și corectă.',[
-['Normalitate','H este normal în G dacă gH=Hg pentru orice g∈G. Echivalent, gHg⁻¹=H. Numai atunci înmulțirea claselor (aH)(bH)=abH este bine definită.'],
-['Grupul factor','Elementele lui G/H sunt clase laterale, nu elementele individuale ale lui G. Pentru G finit, |G/H|=[G:H]. Primul izomorfism: G/ker(f) este izomorf cu Im(f).'],
-['Indice 2','Orice subgrup de indice 2 este normal. Există numai H și complementul său. În factorul de ordin 2, clasa netrivială c satisface c²=H. De aceea a,b∉H implică ab∈H.']
-],{prompt:'H≤G, [G:H]=2, a,b∉H. De ce ab∈H?',steps:['Indicele 2 implică H normal.','G/H are două elemente: H și c.','aH=bH=c, deci (aH)(bH)=c²=H.','abH=H, adică ab∈H.']},[
-C('Dacă [G:H]=2 și a,b∉H, unde se află ab?',[{id:'a',label:'În H'},{id:'b',label:'În afara lui H'},{id:'c',label:'Nu se poate determina'}],'a','Lucrează în grupul factor de ordin 2.',['Clasele lui a și b sunt aceeași clasă netrivială, al cărei pătrat este clasa H.']),
-D('Demonstrează că orice subgrup de indice 2 este normal.',['Identifică cele două clase stângi.','Observă că pentru g∉H, atât gH cât și Hg sunt complementul lui H.','Tratează separat g∈H și g∉H.'],['Dacă g∈H, gH=H=Hg.','Dacă g∉H, gH este unica clasă stângă diferită de H, deci G∖H.','Analog, Hg este unica clasă dreaptă diferită de H, deci G∖H.','Prin urmare gH=Hg pentru orice g: H este normal.'])
-],'Nu folosi înmulțirea din G/H înainte să justifici că H este normal.',['lagrange','morfisme']),
+
+
+
+
+
 L('corp','inele','Inele, corpuri și unități','Să știi când ai voie să împarți într-o structură finită.',[
 ['Inel','Un inel are două operații: adunarea formează un grup abelian, înmulțirea este asociativă și se distribuie față de adunare. Aici lucrăm cu inele cu 1. Comutativitatea înmulțirii este precizată separat.'],
 ['Unități și corp','O unitate este un element inversabil multiplicativ. Un corp comutativ are inverse pentru toate elementele nenule și 0≠1. ℤₙ este corp exact când n este prim.'],
@@ -216,14 +143,7 @@ L('corp','inele','Inele, corpuri și unități','Să știi când ai voie să îm
 S('Scrie U(ℤ₁₀), cu reprezentanți canonici.',[1,3,7,9],'Caută numerele prime cu 10.',['gcd(a,10)=1 pentru a=1,3,7,9.']),
 C('Care dintre ℤ₇ și ℤ₈ este corp?',[{id:'a',label:'Doar ℤ₇'},{id:'b',label:'Ambele'},{id:'c',label:'Doar ℤ₈'}],'a','ℤₙ este corp dacă și numai dacă n este prim.',['7 este prim; 8 este compus și are elemente nenule neinversabile.'])
 ],'Nu anula un factor nenul într-un inel fără să știi că este inversabil sau că nu este divizor al lui zero.',['invers','grup']),
-L('ideale','inele','Ideale și inele factor','Să legi clasele modulo n de ideea generală de factor.',[
-['Idealul','Într-un inel comutativ R, un ideal I este subgrup aditiv și absoarbe înmulțirea: r·a∈I pentru orice r∈R, a∈I. În ℤ, idealul nℤ este mulțimea multiplilor lui n.'],
-['Factorul','R/I conține clasele a+I, iar operațiile sunt induse de cele din R. ℤ/nℤ este exact inelul ℤₙ.'],
-['Morfisme de inele','Un morfism păstrează adunarea, înmulțirea și, în convenția cu 1, unitatea. Nucleul este un ideal. Un ideal maximal propriu produce un corp factor; în ℤ, pℤ este maximal pentru p prim.']
-],{prompt:'Ce clasă reprezintă 17 în ℤ/5ℤ?',steps:['17−2=15 aparține lui 5ℤ.','17+5ℤ=2+5ℤ.']},[
-N('Care este reprezentantul canonic al lui 23+6ℤ în ℤ/6ℤ?',5,'Scade multipli ai lui 6.',['23=3·6+5.']),
-C('Idealul 4ℤ este maximal în ℤ?',[{id:'a',label:'Da'},{id:'b',label:'Nu'}],'b','Factorul ℤ/4ℤ este corp?',['Nu: clasa lui 2 este nenulă și 2·2=0. De asemenea 4ℤ⊊2ℤ⊊ℤ.'])
-],'Un subgrup aditiv nu este automat ideal într-un inel arbitrar.',['corp','factor']),
+
 L('polinoame','inele','Polinoame în ℤₚ[X]','Să calculezi coeficienții în corpul corect.',[
 ['Ce reprezintă X','Un polinom este o sumă finită a₀+a₁X+…+a_dXᵈ. Gradul este cel mai mare exponent cu coeficient nenul. În ℤₚ[X], fiecare coeficient se reduce modulo p.'],
 ['Operații','Aduni coeficienții cu aceeași putere a lui X. La înmulțire folosești distributivitatea. Identitatea de polinoame cere egalitatea coeficienților, nu doar coincidența în câteva puncte.'],
@@ -353,10 +273,11 @@ N('Câte submulțimi fără vecini are {1,…,10}? Include mulțimea vidă.',144
 ],'Nu omite mulțimea vidă: lipsa ei schimbă toate cazurile de bază.',['multimi'])
 );
 
-addFoundations(chapters,lessons);
 extendCourse(lessons);
+configureCurriculum(chapters,lessons);
 addPracticeBank(lessons);
 for(const lesson of lessons){lesson.exercises.forEach((e,i)=>{e.id=`${lesson.id}-${i+1}`;e.chapter=lesson.chapter;e.lesson=lesson.id;});}
+addGuidedExercises(lessons);
 export const exercises=lessons.flatMap(l=>l.exercises);
 
 

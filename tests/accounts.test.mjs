@@ -12,7 +12,7 @@ const tenant='11111111-1111-4111-8111-111111111111',object='22222222-2222-4222-8
 const env={AUTH_ENABLED:'true',WEBSITE_INSTANCE_ID:'unit-test',WEBSITE_AUTH_ENABLED:'true',AUTH_UNIVERSITY_TENANT_IDS:tenant,AUTH_ORIGIN:'https://algebra.example.test'};
 const principal=(email='student@s.unibuc.ro',objectId=object,extra=[])=>Buffer.from(JSON.stringify({auth_typ:'aad',claims:[{typ:'tid',val:tenant},{typ:'oid',val:objectId},{typ:'preferred_username',val:email},{typ:'name',val:'Student Test'},...extra]})).toString('base64');
 const copy=value=>JSON.parse(JSON.stringify(value));
-function progress(id='impartire-baze-1',value='-2'){const s=blank();attempt(s,id).value=value;return s;}
+function progress(id='resturi-1',value='-2'){const s=blank();attempt(s,id).value=value;return s;}
 test('Microsoft university identity is accepted only behind configured Easy Auth',()=>{
  assert.equal(accountSettings({}),null);
  for(const overrides of [{WEBSITE_INSTANCE_ID:''},{WEBSITE_AUTH_ENABLED:'false'},{AUTH_ORIGIN:'http://algebra.example.test'},{AUTH_ORIGIN:''},{AUTH_UNIVERSITY_TENANT_IDS:''}])assert.throws(()=>accountSettings({...env,...overrides}));
@@ -30,8 +30,8 @@ test('Microsoft university identity is accepted only behind configured Easy Auth
 });
 test('progress validation preserves algebra data and refuses foreign IDs and malformed simulations',()=>{
  assert.deepEqual(normalizeProgress(progress()),progress());
- for(const value of [{version:2,records:{}},{...blank(),attempts:{unknown:{value:'x'}}},progress('impartire-baze-1','x'.repeat(8001)),{...progress(),exam:{status:'running',ids:['unknown'],start:1,end:60001}}])assert.throws(()=>normalizeProgress(value));
- const value=progress();value.attempts['impartire-baze-1'].level=5;assert.throws(()=>normalizeProgress(value));
+ for(const value of [{version:2,records:{}},{...blank(),attempts:{unknown:{value:'x'}}},progress('resturi-1','x'.repeat(8001)),{...progress(),exam:{status:'running',ids:['unknown'],start:1,end:60001}}])assert.throws(()=>normalizeProgress(value));
+ const value=progress();value.attempts['resturi-1'].level=5;assert.throws(()=>normalizeProgress(value));
 });
 test('account API uses real isolated SQL, atomic versions, ownership checks and request validation',async t=>{
  const {PGlite}=createRequire(import.meta.url)('@electric-sql/pglite');
@@ -42,10 +42,10 @@ test('account API uses real isolated SQL, atomic versions, ownership checks and 
  try{
   let r=await request('/api/account');assert.equal(r.status,200);assert.equal(JSON.parse(r.body).user.name,'Student Test');
   r=await request();assert.deepEqual(JSON.parse(r.body),{version:0,progress:blank()});assert.equal(r.headers['cache-control'],'no-store');
-  const payload=progress('impartire-baze-1',"'); DROP TABLE sai_account_progress; --");
+  const payload=progress('resturi-1',"'); DROP TABLE sai_account_progress; --");
   r=await request('/api/progress','PUT',{version:0,progress:payload});assert.equal(r.status,200);assert.equal(JSON.parse(r.body).version,1);
   const stale=await request('/api/progress','PUT',{version:0,progress:payload});assert.equal(stale.status,409);assert.equal(JSON.parse(stale.body).version,1);
-  const requests=await Promise.all([1,2].map(n=>request('/api/progress','PUT',{version:1,progress:progress('impartire-baze-1',String(n))})));assert.deepEqual(requests.map(r=>r.status).sort(),[200,409]);
+  const requests=await Promise.all([1,2].map(n=>request('/api/progress','PUT',{version:1,progress:progress('resturi-1',String(n))})));assert.deepEqual(requests.map(r=>r.status).sort(),[200,409]);
   r=await request('/api/progress','GET',undefined,{'X-MS-CLIENT-PRINCIPAL':principal('second@s.unibuc.ro',other),'X-SAI-Account':tenant+':'+other});assert.deepEqual(JSON.parse(r.body).progress,blank());
   assert.equal((await request('/api/progress','PUT',{version:2,progress:payload},{Origin:'https://evil.test'})).status,403);
   assert.equal((await request('/api/progress','PUT',{version:2,progress:payload},{'X-SAI-Progress':''})).status,403);
@@ -76,16 +76,16 @@ function cloud(){let remote={version:0,progress:blank()},writes=0;return {get re
 test('shipped client restores devices, merges different exercises and stops on conflicting answers',async()=>{
  const server=cloud(),first=fixture({api:server.api});await first.controller.start();first.state=progress();assert.equal(first.controller.save(),true);await first.controller.flush();
  const second=fixture({api:server.api});await second.controller.start();assert.deepEqual(second.state,first.state);
- first.state.attempts['impartire-baze-2']=progress('impartire-baze-2','da').attempts['impartire-baze-2'];first.controller.save();await first.controller.flush();
+ first.state.attempts['resturi-2']=progress('resturi-2','da').attempts['resturi-2'];first.controller.save();await first.controller.flush();
  second.state.attempts['invers-1']=progress('invers-1','46').attempts['invers-1'];second.controller.save();await second.controller.flush();await second.controller.flush();
- assert.ok(server.remote.progress.attempts['impartire-baze-2']);assert.ok(server.remote.progress.attempts['invers-1']);
- const third=fixture({api:server.api});await third.controller.start();third.state.attempts['impartire-baze-1'].value='remote';third.controller.save();await third.controller.flush();
- second.state.attempts['impartire-baze-1'].value='local';second.controller.save();await second.controller.flush();
- assert.ok(second.elements.get('#account-status').textContent.includes('Am oprit sincronizarea'));const count=server.writes;await second.controller.flush();assert.equal(server.writes,count);assert.equal(server.remote.progress.attempts['impartire-baze-1'].value,'remote');
- assert.equal(JSON.parse(second.storage.get('sai-test:account:'+tenant+':'+object)).progress.attempts['impartire-baze-1'].value,'local');
- const offline=fixture({storage:second.storage,api:async()=>{throw Error('offline');}});await offline.controller.start();assert.equal(offline.state.attempts['impartire-baze-1'].value,'local');
+ assert.ok(server.remote.progress.attempts['resturi-2']);assert.ok(server.remote.progress.attempts['invers-1']);
+ const third=fixture({api:server.api});await third.controller.start();third.state.attempts['resturi-1'].value='remote';third.controller.save();await third.controller.flush();
+ second.state.attempts['resturi-1'].value='local';second.controller.save();await second.controller.flush();
+ assert.ok(second.elements.get('#account-status').textContent.includes('Am oprit sincronizarea'));const count=server.writes;await second.controller.flush();assert.equal(server.writes,count);assert.equal(server.remote.progress.attempts['resturi-1'].value,'remote');
+ assert.equal(JSON.parse(second.storage.get('sai-test:account:'+tenant+':'+object)).progress.attempts['resturi-1'].value,'local');
+ const offline=fixture({storage:second.storage,api:async()=>{throw Error('offline');}});await offline.controller.start();assert.equal(offline.state.attempts['resturi-1'].value,'local');
  const switched=fixture({storage:second.storage,id:tenant+':'+other,api:cloud().api});await switched.controller.start();assert.deepEqual(switched.state,blank());
- const signout=first.elements.get('#account-controls').children.find(el=>el.action==='/account/logout');assert.equal(signout.method,'post');assert.equal(signout.children[0].children[0].textContent,'Student Test');signout.listeners.submit();const prior=server.writes;first.state.attempts['impartire-baze-1'].value='after logout';await first.controller.flush();assert.equal(server.writes,prior);
+ const signout=first.elements.get('#account-controls').children.find(el=>el.action==='/account/logout');assert.equal(signout.method,'post');assert.equal(signout.children[0].children[0].textContent,'Student Test');signout.listeners.submit();const prior=server.writes;first.state.attempts['resturi-1'].value='after logout';await first.controller.flush();assert.equal(server.writes,prior);
 });
 test('anonymous migration is owned once, survives a failed save and never copies a different account',async()=>{
  const storage=new Map([['sai-test',JSON.stringify(progress())]]),server=cloud();let fail=true;
@@ -97,8 +97,8 @@ test('anonymous migration is owned once, survives a failed save and never copies
  const local=fixture({enabled:false,api});await local.controller.start();assert.ok(local.elements.get('#account-controls').children.every(e=>e.disabled));assert.equal(local.elements.get('#account-signin-hint').hidden,false);assert.equal(local.elements.get('#account-signin-hint').textContent,'Conectează-te cu Microsoft pentru a salva progresul în cont.');assert.equal(first.elements.get('#account-signin-hint').hidden,true);
 });
 test('concurrent changes to a simulation are preserved as a conflict, never merged into a submitted exam',()=>{
- const base=blank();base.exam={status:'running',ids:['impartire-baze-1'],start:1,end:60001,answers:{},notes:{},label:'Test'};
- const ours=copy(base),theirs=copy(base);ours.exam.answers['impartire-baze-1']='2';theirs.exam.status='submitted';
- const result=mergeProgress(base,ours,theirs);assert.deepEqual(result.conflicts,['exam']);assert.equal(result.progress.exam.status,'submitted');assert.equal(ours.exam.answers['impartire-baze-1'],'2');
+ const base=blank();base.exam={status:'running',ids:['resturi-1'],start:1,end:60001,answers:{},notes:{},label:'Test'};
+ const ours=copy(base),theirs=copy(base);ours.exam.answers['resturi-1']='2';theirs.exam.status='submitted';
+ const result=mergeProgress(base,ours,theirs);assert.deepEqual(result.conflicts,['exam']);assert.equal(result.progress.exam.status,'submitted');assert.equal(ours.exam.answers['resturi-1'],'2');
 });
 

@@ -1,21 +1,21 @@
 # Structuri algebrice în informatică
 
-Curs interactiv în limba română, cu recapitularea noțiunilor necesare pentru structuri algebrice: 58 de lecții în 9 capitole și 879 de exerciții cu indicii și rezolvări.
+Curs interactiv în limba română: 45 de lecții în 6 capitole și 707 exerciții cu indicii și rezolvări.
 
 ## Conținut
 
-- Împărțire cu rest, fracții, puteri, ecuații și raționament matematic.
-- Mulțimi, funcții și relații.
-- Aritmetică modulară, grupuri și permutări.
-- Inele, corpuri și polinoame.
-- Determinanți, sisteme liniare și aplicații.
+- Grupuri, clase de resturi, inverse și puteri modulare.
+- Ordine de elemente, generatori și permutări.
+- Inele, corpuri finite, cuaternioni și polinoame.
+- Matrice, determinanți, inverse, rang și sisteme cu parametru.
+- Resturi chinezești, aplicații de criptare și probleme de numărare.
 
-Lecțiile includ explicații, exemple rezolvate și exerciții parcurse pe rând. Sunt disponibile recapitulări, simulări și ateliere de algebră. Demonstrațiile au criterii de autoevaluare.
+Notațiile și metodele sunt explicate în contextul problemelor. Lecțiile includ exemple rezolvate și exerciții de la înțelegerea cerinței până la justificarea soluției. Demonstrațiile au criterii de autoevaluare.
 
-## Editor matematic și progres
+## Editor și progres
 
-Răspunsurile se pot introduce în mod text sau vizual, folosind [MathLive](https://github.com/arnog/mathlive), distribuit sub licența MIT.
+Răspunsurile se introduc în mod text sau vizual, folosind [MathLive](https://github.com/arnog/mathlive), distribuit sub licența MIT.
 
-Progresul se salvează automat în browser. Când conectarea cu Microsoft este disponibilă, progresul se poate sincroniza între dispozitive. Detalii în [ACCOUNTS.md](ACCOUNTS.md).
+Progresul se salvează în browser și se poate sincroniza între dispozitive prin conectare Microsoft. Detalii în [ACCOUNTS.md](ACCOUNTS.md).
 
-Temele acoperite și limitele cursului sunt descrise în [COVERAGE.md](COVERAGE.md).
+Temele și materialele de referință sunt descrise în [COVERAGE.md](COVERAGE.md).
