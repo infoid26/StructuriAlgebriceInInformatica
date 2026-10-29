@@ -82,7 +82,7 @@ export function configureCurriculum(chapters,lessons){
  lessons.splice(0,lessons.length,...ordered);
 }
 const guided={
- grup:[C('În grupul (G,★), ce reprezintă ★?','Operația definită pe elementele lui G','Numărul de elemente al lui G',['G este mulțimea.','★ este regula care combină două elemente.']),N('În grupul (ℤ,+), care este elementul neutru?',0,'Caută e cu a+e=a pentru orice a.',['Adunarea lui 0 păstrează orice a.','Neutrul este 0.'])],
+ grup:[C('În grupul (G,∗), ce reprezintă ∗?','Operația definită pe elementele lui G','Numărul de elemente al lui G',['G este mulțimea.','∗ este regula care combină două elemente.']),N('În grupul (ℤ,+), care este elementul neutru?',0,'Caută e cu a+e=a pentru orice a.',['Adunarea lui 0 păstrează orice a.','Neutrul este 0.'])],
  resturi:[C('Cum citim 17≡2 (mod 5)?','17 și 2 au același rest la împărțirea cu 5','17 și 2 sunt același întreg',['17−2=15 este multiplu de 5.','Congruența compară clasele de resturi.']),N('În ℤ₇, ce reprezentant din {0,…,6} are clasa lui −3?',4,'Adaugă 7.',['−3+7=4.','4 este în intervalul cerut.'])],
  opus:[N('Găsește x∈{0,…,222} cu 75+x≡0 (mod 223).',148,'Cauți opusul pentru adunare.',['x≡−75≡148.','75+148=223≡0.'])],
  invers:[C('În 7x≡1 (mod 11), ce căutăm?','Inversul multiplicativ al lui 7 modulo 11','Opusul lui 7 modulo 11',['Produsul trebuie să fie 1.','Opusul rezolvă o sumă egală cu 0.']),N('Care x∈{0,…,10} satisface 7x≡1 (mod 11)?',8,'Caută un produs 7x cu restul 1.',['7·8=56=5·11+1.','Deci x=8.'])],
