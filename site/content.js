@@ -60,7 +60,7 @@ L('grup','grupuri','Ce este un grup?','Să verifici definiția cu exemple și co
 ['Exemple','(ℤ,+) este grup. (ℕ,+) nu este grup: lipsesc inversele aditive ale numerelor pozitive. (ℤ∖{0},·) nu este grup: inversul lui 2 nu este întreg. (ℚ∖{0},·) este grup.'],
 ],{prompt:'Este (ℤ₈,+) un grup?',steps:['Adunarea claselor este internă și asociativă.','Neutrul este 0. Inversul aditiv al lui a este −a modulo 8.','Da; în plus, este abelian.']},[
 C('Care structură este grup?',[{id:'a',label:'(ℤ,+)'},{id:'b',label:'(ℤ,·)'},{id:'c',label:'(ℕ₀,+)'}],'a','Verifică existența inversului pentru fiecare element.',['În (ℤ,+), inversul lui a este −a. În celelalte variante există elemente fără invers.']),
-N('Care este neutrul grupului (U(ℤ₁₂),·)?',1,'Neutrul trebuie să lase fiecare element neschimbat la înmulțire.',['Neutrul multiplicativ este clasa lui 1.'])
+N('Care este neutrul grupului (ℚ∖{0},·)?',1,'Neutrul trebuie să lase fiecare element neschimbat la înmulțire.',['Neutrul multiplicativ este clasa lui 1.'])
 ],'Comutativitatea nu face parte din definiția oricărui grup.',['operatii','invers']),
 L('ordin-aditiv','grupuri','Ordinul într-un grup aditiv','Să găsești cel mai mic număr de repetări până la 0.',[
 ['Ce număr căutăm','Ordinul lui a în (ℤₙ,+) este cel mai mic k>0 cu k·a≡0 (mod n). Nu este valoarea lui a și nu este întotdeauna n.'],

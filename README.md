@@ -10,7 +10,7 @@ Curs interactiv în limba română: 45 de lecții în 6 capitole și 707 exerci�
 - Matrice, determinanți, inverse, rang și sisteme cu parametru.
 - Resturi chinezești, aplicații de criptare și probleme de numărare.
 
-Notațiile și metodele sunt explicate în contextul problemelor. Lecțiile includ exemple rezolvate și exerciții de la înțelegerea cerinței până la justificarea soluției. Demonstrațiile au criterii de autoevaluare.
+Termenii și notațiile sunt explicați înaintea formulelor, prin scheme, tabele și exemple vizuale. Lecțiile includ rezolvări pas cu pas și exerciții de la înțelegerea cerinței până la justificarea soluției. Demonstrațiile au criterii de autoevaluare.
 
 ## Editor și progres
 

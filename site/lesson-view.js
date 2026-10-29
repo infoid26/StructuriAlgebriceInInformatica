@@ -1,7 +1,8 @@
 import {esc,stepsHtml,exerciseHtml} from './ui.js';
+import {visualHtml} from './lesson-visuals.js';
 import {isComplete,isExercisePassed} from './state.js';
 export function lessonSteps(lesson){
- return [...lesson.theory.map(([,text])=>({kind:'theory',text})),{kind:'worked'},...lesson.exercises.map((exercise,index)=>({kind:'exercise',exercise,index})),{kind:'finish'}];
+ return [...lesson.theory.map(([title,text,visual])=>({kind:'theory',title,text,visual})),{kind:'worked'},...lesson.exercises.map((exercise,index)=>({kind:'exercise',exercise,index})),{kind:'finish'}];
 }
 export function resolveLessonStep(lesson,state,value){
  const steps=lessonSteps(lesson),offset=lesson.theory.length+1;
@@ -21,7 +22,7 @@ export function lessonHtml({lesson,index,total,chapter,state,step,nextLesson,les
  let body='';
  if(item.kind==='theory'){
   const prerequisites=step===0&&lesson.prerequisites.length?`<p class="lesson-prerequisite">Pasul anterior: ${lesson.prerequisites.map(id=>`<a href="#lesson/${id}">${esc(lessonMap.get(id).title)}</a>`).join(' · ')}</p>`:'';
-  body=`${step===0?`<p class="goal">${esc(lesson.goal)}</p>${prerequisites}`:''}<div class="lesson-body"><p>${esc(item.text)}</p></div>`;
+  body=`${step===0?`<p class="goal">${esc(lesson.goal)}</p>${prerequisites}`:''}<div class="lesson-body"><h2>${esc(item.title)}</h2><p>${esc(item.text)}</p>${visualHtml(item.visual)}</div>`;
  }else if(item.kind==='worked'){
   body=`<h2>Exemplu rezolvat</h2><p>${esc(lesson.worked.prompt)}</p>${stepsHtml(lesson.worked.steps)}<p class="common-mistake"><strong>De reținut:</strong> ${esc(lesson.trap)}</p>`;
  }else if(item.kind==='exercise'){

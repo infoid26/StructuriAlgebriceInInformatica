@@ -23,13 +23,13 @@ function harness(ex,{saved,mode='learn'}={}){
  if(mode==='exam')state.exam={status:'running',ids:[ex.id],answers:{},notes:{},start:Date.now(),end:Date.now()+60000,label:'Test'};
  const storage=new Map([[stateApi.STORAGE_KEY,JSON.stringify(state)]]),listeners={};
  function node(){return {hidden:false,disabled:false,checked:false,value:'',dataset:{},textContent:'',className:'',events:{},classList:{toggle(){}},setAttribute(){},focus(){this.focused=true;},addEventListener(name,fn){this.events[name]=fn;},fire(name){this.events[name]?.({target:this,currentTarget:this});}};}
- const next=node(),feedback=node(),status=node(),text=node(),check=ex.kind==='choice'||ex.kind==='proof'?null:node(),reviewed=node(),hint=node(),solution=node(),hintButton=node(),solutionButton=node(),note=node();
+ const next=node(),feedback=node(),text=node(),check=ex.kind==='choice'||ex.kind==='proof'?null:node(),reviewed=node(),hint=node(),solution=node(),hintButton=node(),solutionButton=node(),note=node();
  text.value=state.attempts[ex.id]?.value||'';reviewed.checked=!!state.attempts[ex.id]?.reviewed;hint.hidden=true;solution.hidden=true;
  const radios=(ex.options||[]).map(option=>Object.assign(node(),{value:option.id,checked:state.attempts[ex.id]?.value===option.id,disabled:mode==='learn'&&stateApi.isExercisePassed(ex,state.attempts[ex.id])}));
  const article={dataset:{ex:ex.id,mode},querySelectorAll(selector){return selector==='input[type="radio"]'?radios:[];},querySelector(selector){
   if(selector==='input[type="radio"]:checked')return radios.find(r=>r.checked)||null;
   if(selector==='.text-answer')return ex.kind==='choice'?null:text;
-  return ({'.feedback':feedback,'.exercise-status':status,'[data-action="check"]':check,'[data-action="reviewed"]':ex.kind==='proof'?reviewed:null,'[data-action="hint"]':hintButton,'[data-action="solution"]':solutionButton,'.hint':hint,'.solution':solution,'[data-note]':note})[selector]||null;
+  return ({'.feedback':feedback,'[data-action="check"]':check,'[data-action="reviewed"]':ex.kind==='proof'?reviewed:null,'[data-action="hint"]':hintButton,'[data-action="solution"]':solutionButton,'.hint':hint,'.solution':solution,'[data-note]':note})[selector]||null;
  }};
  let markup='';
  const main={get innerHTML(){return markup;},set innerHTML(value){markup=value;next.hidden=/id="lesson-continue"[^>]*\shidden/.test(value);},querySelectorAll(selector){return selector==='[data-ex]'?[article]:[];},querySelector(selector){return selector==='[data-ex]'||selector===`[data-ex="${ex.id}"]`?article:null;},focus(){}};

@@ -77,7 +77,6 @@ function checkExercise(article,ex){
  const feedback=article.querySelector('.feedback');
  article.dataset.status=result.status;feedback.hidden=false;feedback.className='feedback '+result.status;
  feedback.textContent=result.message+(result.status==='correct'?(a.hints||a.revealed?' Rezolvat cu ajutor; revino pentru o încercare independentă.':' Ai rezolvat fără indicii în această încercare.'):'');
- article.querySelector('.exercise-status').textContent=a.lastIndependent?'✓ Independent':a.everCorrect?'✓ Cu ajutor':'';
  if(ex.kind==='choice'&&result.status==='correct')for(const radio of article.querySelectorAll('input[type="radio"]'))radio.disabled=true;
  if(result.status==='correct')document.getElementById('lesson-continue')?.focus({preventScroll:true});
 }

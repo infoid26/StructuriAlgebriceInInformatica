@@ -5,6 +5,7 @@ import {blank,attempt,recordGrade} from '../site/state.js';
 import {lessonSteps,resolveLessonStep,lessonHtml} from '../site/lesson-view.js';
 import {homeHtml} from '../site/home-view.js';
 import {esc} from '../site/ui.js';
+import {visualHtml} from '../site/lesson-visuals.js';
 const lessonMap=new Map(lessons.map(l=>[l.id,l]));
 test('Lesson pages retain every explanation, example and exercise across reachable steps',()=>{
  const seen=[];
@@ -14,7 +15,11 @@ test('Lesson pages retain every explanation, example and exercise across reachab
    const html=lessonHtml({lesson,index,total:lessons.length,chapter:chapters.find(c=>c.id===lesson.chapter),state,step,nextLesson:lessons[index+1],lessonMap,coursePercent:0});
    assert.ok(html.indexOf('class="lesson-controls"')>html.lastIndexOf('</article>'));
    assert.ok(html.includes(step?`href="#lesson/${lesson.id}/${step-1}"`:'href="#home"'));
-   if(item.kind==='theory')assert.ok(html.includes(esc(item.text)));
+   if(item.kind==='theory'){
+    assert.ok(html.includes(`<h2>${esc(item.title)}</h2>`));
+    assert.ok(html.includes(esc(item.text)));
+    if(item.visual)assert.ok(html.includes(visualHtml(item.visual)));
+   }
    if(item.kind==='worked')for(const text of lesson.worked.steps)assert.ok(html.includes(esc(text)));
    if(item.kind==='exercise'){
     seen.push(item.exercise.id);assert.ok(html.includes('data-ex="'+item.exercise.id+'"'));
