@@ -1,10 +1,10 @@
 # Conținutul cursului
 
-Cursul are 62 de lecții și 939 de exerciții, dintre care 64 includ justificarea raționamentului și criterii de autoevaluare.
+Cursul are 58 de lecții și 879 de exerciții, dintre care 60 includ justificarea raționamentului și criterii de autoevaluare.
 
 | Capitol | Lecții | Exerciții |
 | --- | ---: | ---: |
-| De la zero: numere și calcule | 12 | 180 |
+| Instrumente pentru algebră | 8 | 120 |
 | Limbajul algebrei | 4 | 60 |
 | Aritmetică modulară | 6 | 91 |
 | Grupuri și ordine | 5 | 77 |
@@ -14,7 +14,7 @@ Cursul are 62 de lecții și 939 de exerciții, dintre care 64 includ justificar
 | Determinanți și sisteme | 8 | 121 |
 | Congruențe și aplicații | 7 | 105 |
 
-Lecțiile pornesc de la numere, operații, semne și fracții, apoi introduc limbajul matematic și structurile algebrice. Exercițiile includ calcule, aplicarea definițiilor, contraexemple și justificări.
+Recapitularea pornește de la nivelul clasei a V-a și acoperă instrumentele necesare algebrei: resturi, fracții, puteri, ecuații, divizibilitate, logică și demonstrații. Exercițiile includ calcule, aplicarea definițiilor, contraexemple și justificări.
 
 ## Limite de acoperire
 

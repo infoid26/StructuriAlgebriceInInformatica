@@ -8,6 +8,26 @@ const claimNames={
 };
 const empty=blank;
 export const progressLimit=6000000;
+const diagnosticCodes=new Map([
+  ['ENOTFOUND','dns'],['EAI_AGAIN','dns'],
+  ['ECONNREFUSED','network'],['ECONNRESET','network'],['ETIMEDOUT','timeout'],['ENETUNREACH','network'],['EHOSTUNREACH','network'],
+  ['CERT_HAS_EXPIRED','tls'],['DEPTH_ZERO_SELF_SIGNED_CERT','tls'],['SELF_SIGNED_CERT_IN_CHAIN','tls'],['UNABLE_TO_VERIFY_LEAF_SIGNATURE','tls'],['UNABLE_TO_GET_ISSUER_CERT_LOCALLY','tls'],['ERR_TLS_CERT_ALTNAME_INVALID','tls'],
+  ['28P01','database-auth'],['28000','database-auth'],['42501','database-permission'],['3D000','database-missing'],['42P01','table-missing'],['53300','database-capacity'],['57P03','database-unavailable'],['57014','timeout'],
+  ['SAI_DB_NOT_CONFIGURED','configuration'],
+]);
+export function progressErrorDiagnostic(error){
+  const code=diagnosticCodes.has(error?.code)?error.code:'UNKNOWN';
+  if(code!=='UNKNOWN')return {category:diagnosticCodes.get(code),code};
+  if(/^(Connection terminated due to connection timeout|Connection timeout|Query read timeout|timeout exceeded when trying to connect)$/i.test(error?.message||''))return {category:'timeout',code:'CLIENT_TIMEOUT'};
+  return {category:'unknown',code};
+}
+const reportedErrors=new WeakSet();
+function reportProgressError(error,stage){
+  const trackable=error!==null&&(typeof error==='object'||typeof error==='function');
+  if(trackable&&reportedErrors.has(error))return;
+  if(trackable)reportedErrors.add(error);
+  console.warn(JSON.stringify({event:'sai_progress_error',stage,...progressErrorDiagnostic(error)}));
+}
 
 export function progressDatabaseSettings(env){
   if(env.PROGRESS_DATABASE_URL){
@@ -83,13 +103,16 @@ export function normalizeProgress(value){
 }
 export function createProgressStore({connectionString,connectionOptions,database}={}){
  let pool=database,initializing,connecting;
+ async function query(stage,...args){
+  try{return await pool.query(...args);}catch(error){reportProgressError(error,stage);throw error;}
+ }
  async function ready(){
   if(!pool){
-   if(!connectionString&&!connectionOptions)throw Error('Progress database is not configured');
-   connecting??=(async()=>{const {Pool}=await import('pg');const instance=new Pool({...connectionOptions,...(connectionString?{connectionString}:{}),max:4,connectionTimeoutMillis:5000,idleTimeoutMillis:30000,query_timeout:7000,statement_timeout:5000});instance.on('error',()=>console.warn('Progress database unavailable.'));return instance;})().catch(error=>{connecting=undefined;throw error;});
+   if(!connectionString&&!connectionOptions)throw Object.assign(Error('Progress database is not configured'),{code:'SAI_DB_NOT_CONFIGURED'});
+   connecting??=(async()=>{const {Pool}=await import('pg');const instance=new Pool({...connectionOptions,...(connectionString?{connectionString}:{}),max:4,connectionTimeoutMillis:5000,idleTimeoutMillis:30000,query_timeout:7000,statement_timeout:5000});instance.on('error',error=>reportProgressError(error,'idle-connection'));return instance;})().catch(error=>{connecting=undefined;throw error;});
    pool=await connecting;
   }
-  initializing??=pool.query(`CREATE TABLE IF NOT EXISTS public.sai_account_progress (
+  initializing??=query('connect-or-schema',`CREATE TABLE IF NOT EXISTS public.sai_account_progress (
    tenant_id uuid NOT NULL, object_id uuid NOT NULL,
    version integer NOT NULL CHECK (version > 0), progress jsonb NOT NULL,
    updated_at timestamptz NOT NULL DEFAULT now(), PRIMARY KEY (tenant_id, object_id)
@@ -98,10 +121,10 @@ export function createProgressStore({connectionString,connectionOptions,database
  }
  const convert=row=>row?{version:Number(row.version),progress:row.progress}:{version:0,progress:empty()};
  return {
-  async read(user){const db=await ready();const {rows}=await db.query('SELECT version,progress FROM public.sai_account_progress WHERE tenant_id=$1 AND object_id=$2',[user.tenant,user.object]);return convert(rows[0]);},
+  async read(user){const db=await ready();const {rows}=await query('read','SELECT version,progress FROM public.sai_account_progress WHERE tenant_id=$1 AND object_id=$2',[user.tenant,user.object]);return convert(rows[0]);},
   async write(user,version,progress){
    const db=await ready(),values=[user.tenant,user.object,JSON.stringify(progress)];
-   const result=version===0?await db.query('INSERT INTO public.sai_account_progress (tenant_id,object_id,version,progress) VALUES ($1,$2,1,$3::jsonb) ON CONFLICT DO NOTHING RETURNING version,progress',values):await db.query('UPDATE public.sai_account_progress SET version=version+1,progress=$3::jsonb,updated_at=now() WHERE tenant_id=$1 AND object_id=$2 AND version=$4 RETURNING version,progress',[...values,version]);
+   const result=version===0?await query('write','INSERT INTO public.sai_account_progress (tenant_id,object_id,version,progress) VALUES ($1,$2,1,$3::jsonb) ON CONFLICT DO NOTHING RETURNING version,progress',values):await query('write','UPDATE public.sai_account_progress SET version=version+1,progress=$3::jsonb,updated_at=now() WHERE tenant_id=$1 AND object_id=$2 AND version=$4 RETURNING version,progress',[...values,version]);
    return result.rows[0]?convert(result.rows[0]):null;
   },
   async close(){if(pool&&!database)await pool.end();}
@@ -138,7 +161,7 @@ export function createAccountHandler({env={},store}){
    const saved=await store.write(user,input.version,progress);
    if(!saved){json(res,409,{error:'Progresul s-a schimbat pe alt dispozitiv.',...await store.read(user)});return true;}
    json(res,200,saved);
-  }catch{json(res,503,{error:'Progresul nu a putut fi sincronizat. Copia locală este păstrată.'});}
+  }catch(error){reportProgressError(error,req.method==='GET'?'read-request':'write-request');json(res,503,{error:'Progresul nu a putut fi sincronizat. Copia locală este păstrată.'});}
   return true;
  };
 }

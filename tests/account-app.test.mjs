@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {blank,attempt,STORAGE_KEY} from '../site/state.js';
 test('application connects its real save state to the Microsoft sync client and retains guest history',async()=>{
- const guest=blank();attempt(guest,'numere-baze-1').value='-2';guest.attempts['numere-baze-1'].everCorrect=true;
+ const guest=blank();attempt(guest,'impartire-baze-1').value='-2';guest.attempts['impartire-baze-1'].everCorrect=true;
  const storage=new Map([[STORAGE_KEY,JSON.stringify(guest)]]),nodes=new Map();
  function element(){return {children:[],innerHTML:'',textContent:'',hidden:false,dataset:{},classList:{toggle(){}},querySelectorAll(){return [];},querySelector(){return null;},addEventListener(){},focus(){},setAttribute(){},append(value){this.children.push(value);},replaceChildren(){this.children=[];},remove(){}};}
  for(const id of ['main','global-progress','total-progress','save-status','toast','account-panel','account-controls','account-actions','account-status','account-signin-hint'])nodes.set(id,element());
@@ -24,9 +24,9 @@ test('application connects its real save state to the Microsoft sync client and 
  try{
   await import('../site/app.js');
   for(let turn=0;turn<6;turn++)await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(writes,1);assert.equal(remote.progress.attempts['numere-baze-1'].value,'-2');
-  assert.equal(JSON.parse(storage.get(STORAGE_KEY)).attempts['numere-baze-1'].value,'-2');
-  const cached=JSON.parse(storage.get(STORAGE_KEY+':account:'+identity));assert.equal(cached.progress.attempts['numere-baze-1'].value,'-2');
+  assert.equal(writes,1);assert.equal(remote.progress.attempts['impartire-baze-1'].value,'-2');
+  assert.equal(JSON.parse(storage.get(STORAGE_KEY)).attempts['impartire-baze-1'].value,'-2');
+  const cached=JSON.parse(storage.get(STORAGE_KEY+':account:'+identity));assert.equal(cached.progress.attempts['impartire-baze-1'].value,'-2');
   assert.match(nodes.get('account-status').textContent,/sincronizat/);assert.equal(nodes.get('account-panel').hidden,false);assert.match(nodes.get('global-progress').textContent,/^\d+%$/);
  }finally{Object.assign(globalThis,originals);}
 });

@@ -1,10 +1,10 @@
 # Structuri algebrice în informatică
 
-Curs interactiv în limba română, de la bazele matematicii la structuri algebrice: 62 de lecții în 9 capitole și 939 de exerciții cu indicii și rezolvări.
+Curs interactiv în limba română, cu recapitularea noțiunilor necesare pentru structuri algebrice: 58 de lecții în 9 capitole și 879 de exerciții cu indicii și rezolvări.
 
 ## Conținut
 
-- Numere, operații, fracții, puteri și ecuații simple.
+- Împărțire cu rest, fracții, puteri, ecuații și raționament matematic.
 - Mulțimi, funcții și relații.
 - Aritmetică modulară, grupuri și permutări.
 - Inele, corpuri și polinoame.

@@ -7,8 +7,8 @@ import {blank,sanitize,recordGrade} from '../site/state.js';
 import {exerciseHtml} from '../site/ui.js';
 const byId=new Map(exercises.map(e=>[e.id,e]));
 const chooseInput=e=>Array.isArray(e.answer)?e.answer.length?e.answer.join(','):'∅':String(e.answer);
-test('zero-experience entry, stable progress IDs and complete practice are preserved',()=>{
- assert.equal(lessons[0].id,'numere-baze');assert.equal(lessons[11].id,'demonstratii-baze');assert.equal(lessons[12].id,'multimi');
+test('algebra prerequisites, stable progress IDs and complete practice are preserved',()=>{
+ assert.equal(lessons[0].id,'impartire-baze');assert.equal(lessons[7].id,'demonstratii-baze');assert.equal(lessons[8].id,'multimi');
  assert.equal(chapters[0].id,'baze');assert.ok(exercises.length>=800);
  for(const l of lessons){assert.ok(l.exercises.length>=15,l.id);assert.equal(new Set(l.exercises.map(e=>e.prompt)).size,l.exercises.length,l.id);assert.ok(l.exercises.some(e=>e.kind==='proof'),l.id);}
  for(const id of ['multimi-1','invers-1','parametri-1','max01-1'])assert.ok(byId.has(id));
